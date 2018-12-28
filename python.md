@@ -23,13 +23,19 @@
 #### 2.1.4 使用
 要确保``pylint``在你的代码上运行。
 忽视一些不准确的警告，这样其他的问题不会被隐藏。忽视警告，你可以用下面这个命令
-```dict = 'something awful'  # Bad Idea... pylint: disable=redefined-builtin```
+```
+dict = 'something awful'  # Bad Idea... pylint: disable=redefined-builtin
+```
 在``pylint``中，警告都会用象征性的名字命名。如果用象征性的名字不够明确，则可以再加上注释。
 用这种方法可以很容易找到被忽视的警告。
 你可以得到一系列``pylint``警告，通过：
-```pylint --list-msgs```
+```
+pylint --list-msgs
+```
 针对某一条获得更多信息，通过：
-```pylint --help-msg=C6409```
+```
+pylint --help-msg=C6409
+```
 可以用``pylint: disable`` 替换掉旧的格式``pylint: disable-msg``
 对于没使用过的参数的警告，可以在函数开始删掉对应的变量来忽视这条警告。永远记得要加上一条注释表明为什么要删掉。用``unused``去注释就是很好的选择。例如：
 ``` python3
