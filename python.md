@@ -45,3 +45,4 @@ def viking_cafe_order(spam, beans, eggs=None)：
     
     return spam + spam + spam
 ```
+另一种方法是用``_``当做识别没使用过的参数的符号，用``unused_``或者``_``作为这个参数的前缀。这些方式是允许的，但不鼓励这么做。前面两个通过变量名来传递参数，但第三个就不能确保参数没使用
