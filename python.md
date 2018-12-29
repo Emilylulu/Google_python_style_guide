@@ -72,4 +72,6 @@ from sound.effects import echo
 ...
 echo.EchoFilter(input, output, delay=0.7, atten=4)
 ```
+不要用相对名称去导入。即使模块来自同一个包，也要用包的全名。这样可以避免同一个包导入两次。
+类型注解的导入则是例外。
 #### 3.19.12 类型注解的导入
