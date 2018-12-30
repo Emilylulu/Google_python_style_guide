@@ -98,7 +98,6 @@ FLAGS = absl.flags.FLAGS
 # 在代码中只用模块名称来导入flags (常用方法).
 from absl import flags
 from doctor.who import jodie
-
 FLAGS = flags.FLAGS
 ```
 不正确的：(假设此文件和``jodie.py``都存在与``doctor/who/``)
