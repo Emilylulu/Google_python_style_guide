@@ -89,13 +89,13 @@ echo.EchoFilter(input, output, delay=0.7, atten=4)
 导入应该像下面的例子中一样
 正确的：
 ```python3
-# 在代码中用完整的名字调用 absl.flags（详细的）
+# 在代码中用完整的名字调用absl.flags（详细的）
 import absl.flags
 from doctor.who import jodie
 FLAGS = absl.flags.FLAGS
 ```
 ```python3
-# 在代码中只用模块名称来导入 flags (常用方法).
+# 在代码中只用模块名称来导入flags (常用方法).
 from absl import flags
 from doctor.who import jodie
 
@@ -104,7 +104,7 @@ FLAGS = flags.FLAGS
 不正确的：(假设此文件和``jodie.py``都存在与``doctor/who/``)
 ```python3
 # 不清楚想要的模块是什么以及将导入什么。  
-# 实际的导入将取决于外在的 sys.path.
+# 实际的导入将取决于外在的sys.path.
 # 哪个可能的jodie模块才是真正想要被导入的？
 import jodie
 ```
