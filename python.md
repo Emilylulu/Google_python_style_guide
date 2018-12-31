@@ -167,7 +167,7 @@ python可以catch所有的异常，包括名称拼写错误，sys.exit()，Ctrl+
 5）尽量减少``try/catch``内部的代码数量。try越长，那就越有可能会把不希望当成是异常的当成异常处理。在这些情况下，``try/catch``中可能包含真正的代码错误。<br>
 6）不管异常有没有在``try``当中出现，用``finally``来执行代码。这通常对清理有用，比如关闭文件。<br>
 7）当捕捉到一个异常，用``as``来替代逗号。比如：<br>
-```
+```python3
 try:
   raise Error()
 except Error as error:
