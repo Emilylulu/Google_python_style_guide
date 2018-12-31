@@ -19,6 +19,11 @@
 2.3.1 [优点](#231-优点)<br>
 2.3.2 [缺点](#232-缺点)<br>
 2.3.3 [使用](#233-使用)<br>
+2.4 [异常处理](#24-异常处理)<br>
+2.4.1 [定义](#241-定义)<br>
+2.4.2 [优点](#242-优点)<br>
+2.4.3 [缺点](#243-缺点)<br>
+2.4.4 [使用](#244-使用)<br>
 3.19.12 [类型注解的导入](#31912-类型注解的导入)<br>
 ## 1 背景
 python 是谷歌主要使用的动态语言。这篇指南主要讲述在python中应该做和不应该做的事项。
@@ -108,4 +113,65 @@ FLAGS = flags.FLAGS
 import jodie
 ```
 尽管在某些环境下会发生，但这个目录应该不能假定存在于``sys.path``中，在这种情况中，``import jodie``则意味着代码将导入一个第三方或者顶层的一个名叫jodie的包，而不是本地文件``jodie.py``。
+### 2.4 异常处理
+异常是允许的，但使用必须小心。
+#### 2.4.1 定义
+异常是在某些特定条件下，或者为了解决某些错误，可以改变代码的正常的控制流。
+#### 2.4.2 优点
+代码的正常控制流不会被处理错误而干扰。在某些情况下，控制流可以跳过多个数据框，例如，一步返回N层嵌套函数，而不是执行包含错误的所有代码。
+#### 2.4.3 缺点
+可能会导致控制流变复杂。当调用库函数的时候，容易遗漏错误。
+#### 2.4.4 使用
+例外必须遵循以下条件：<br>
+1）以``raise MyError('Error message')``或``raise MyError()``的形式来使用异常处理。不要使用两个参数的形式，例如``raise MyError, 'Error message'``。<br>
+2）确保使用异常处理的类是有意义的。比如，使用``ValueError``来提醒如果传一个负数而想要得到的是正数的情况。不要使用``assert``语句。``assert``是用来检验公有API参数的。它是用来确认内部是正确的，而不是用来强制改变正确的程度或是表明一些不期待发生的事件已经发生。如果是后者情况，就应用``raise``语句来处理。
+正确的：
+```python3
+  def connect_to_next_port(self, minimum):
+    """Connects to the next available port.
+
+    Args:
+      minimum: A port value greater or equal to 1024.
+    Raises:
+      ValueError: If the minimum port specified is less than 1024.
+      ConnectionError: If no available port is found.
+    Returns:
+      The new minimum port.
+    """
+    if minimum < 1024:
+      raise ValueError('Minimum port must be at least 1024, not %d.' % (minimum,))
+    port = self._find_next_open_port(minimum)
+    if not port:
+      raise ConnectionError('Could not connect to service on %d or higher.' % (minimum,))
+    assert port >= minimum, 'Unexpected port %d when minimum was %d.' % (port, minimum)
+    return port
+```
+错误的：
+```python3
+  def connect_to_next_port(self, minimum):
+    """Connects to the next available port.
+
+    Args:
+      minimum: A port value greater or equal to 1024.
+    Returns:
+      The new minimum port.
+    """
+    assert minimum >= 1024, 'Minimum port must be at least 1024.'
+    port = self._find_next_open_port(minimum)
+    assert port is not None
+    return port
+```
+3) 库或者包可能会定义自己的异常处理。这种情况下必须继承已有的异常处理类。异常处理的名字应该已``error``结尾，且不能用重复的名字。（``foo.FooError``）   
+4) 不要catch所有的``except``语句，``Exception``或``StandardError``，除非正在做异常处理，或已经在最外层线程中（并且打印错误信息）
+python可以catch所有的异常，包括名称拼写错误，sys.exit()，Ctrl+C，和其他任何不想被catch的所有类型的异常。
+5）尽量减少``try/catch``内部的代码数量。try越长，那就越有可能会把不希望当成是异常的当成异常处理。在这些情况下，``try/catch``中可能包含真正的代码错误。
+6）不管异常有没有在``try``当中出现，用``finally``来执行代码。这通常对清理有用，比如关闭文件。
+7）当捕捉到一个异常，用``as``来替代逗号。比如：
+```
+try:
+  raise Error()
+except Error as error:
+  pass
+```
+
 #### 3.19.12 类型注解的导入
