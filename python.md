@@ -34,6 +34,11 @@
 2.6.2 [优点](#262-优点)<br>
 2.6.3 [缺点](#263-缺点)<br>
 2.6.4 [使用](#264-使用)<br>
+2.7 [解析式和生成器表达式](#27-解析式和生成器表达式)<br>
+2.7.1 [定义](#271-定义)<br>
+2.7.2 [优点](#272-优点)<br>
+2.7.3 [缺点](#273-缺点)<br>
+2.7.4 [使用](#274-使用)<br>
 3.16 [命名](#316-命名)<br>
 3.19.12 [类型注解的导入](#31912-类型注解的导入)<br>
 ## 1 背景
@@ -205,5 +210,63 @@ except Error as error:
  本地或者嵌套类中的实例不可以被序列化（pickle）。嵌套的类和函数不能直接测试。嵌套会让外部函数名字变长，可读性变差。
 #### 2.6.4 使用
 使用过程中有一些注意事项。避免使用嵌套除非是有本地值的闭包。不要因为对模块的使用者隐藏而使用嵌套。在模块级别中，函数名加``_``这样仍旧可以直接被测试访问。
+### 2.7 解析式和生成器表达式
+可以在简单的情况下使用。
+#### 2.7.1 定义
+列表，字典和集合（list, dict, set）的解析式和生成器表达式提供了简介和高效的方式，一种不需要使用传统循环，``map()``, ``filter()``或者是``lambda``，就可以创建一个容器类型和迭代器。
+#### 2.7.2 优点
+简单的解析式创建起来要比列表，字典和集合更简单更清晰。生成器表达式创建更高效，因为不需要创建列表。
+#### 2.7.3 缺点
+复杂的解析式和生成器表达式可能很难理解。
+#### 2.7.4 使用
+简单情况下可以使用。每一个部分必须一行以内：mapping 表达式，``for``语句，filter 表达式。多个``for``语句或者filter 表达式是不允许的。当需要更复杂的时候用循环代替。
+正确的：
+```python3
+result = [mapping_expr for value in iterable if filter_expr]
+
+  result = [{'key': value} for value in iterable
+            if a_long_filter_expression(value)]
+
+  result = [complicated_transform(x)
+            for x in iterable if predicate(x)]
+
+  descriptive_name = [
+      transform({'key': key, 'value': value}, color='black')
+      for key, value in generate_iterable(some_input)
+      if complicated_condition_is_met(key, value)
+  ]
+
+  result = []
+  for x in range(10):
+      for y in range(5):
+          if x * y > 10:
+              result.append((x, y))
+
+  return {x: complicated_transform(x)
+          for x in long_generator_function(parameter)
+          if x is not None}
+
+  squares_generator = (x**2 for x in range(10))
+
+  unique_names = {user.name for user in users if user is not None}
+
+  eat(jelly_bean for jelly_bean in jelly_beans
+      if jelly_bean.color == 'black')
+```
+错误的：
+```python3
+  result = [complicated_transform(
+                x, some_argument=x+1)
+            for x in iterable if predicate(x)]
+
+  result = [(x, y) for x in range(10) for y in range(5) if x * y > 10]
+
+  return ((x, y, z)
+          for x in xrange(5)
+          for y in xrange(5)
+          if x != y
+          for z in xrange(5)
+          if y != z)
+```
 ### 3.16 命名
 #### 3.19.12 类型注解的导入
