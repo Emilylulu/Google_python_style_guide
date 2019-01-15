@@ -222,7 +222,7 @@ except Error as error:
 简单情况下可以使用。每一个部分必须一行以内：mapping 表达式，``for``语句，filter 表达式。多个``for``语句或者filter 表达式是不允许的。当需要更复杂的时候用循环代替。<br>
 正确的：
 ```python3
-result = [mapping_expr for value in iterable if filter_expr]
+  result = [mapping_expr for value in iterable if filter_expr]
 
   result = [{'key': value} for value in iterable
             if a_long_filter_expression(value)]
