@@ -310,7 +310,8 @@ lambda在表达式中定义无名函数，而不是在语句中。在高阶函�
 默认参数只在函数定义时赋值，如果默认参数是一个可变的类型如列表或字典，就有可能产生问题。如果函数改变了这个对象，（比如在列表里插入一个值）那默认值也会变。<br>
 如果默认参数是一个变量，``def spam(a,b=x)``，如果改变x的值，再次调用``spam``得到的仍旧是改变之前的值。
 #### 2.12.4 使用
-不要将可变类型作为默认参数，可用None，False，True，数字等等。
+不要将可变类型作为默认参数，可用None，False，True，数字等等。<br>
+正确的：
 ```python3
 Yes: def foo(a, b=None):
          if b is None:
@@ -320,6 +321,7 @@ Yes: def foo(a, b: Optional[Sequence] = None):
              b = []
 Yes: def foo(a, b: Sequence = ()):  # Empty tuple OK since tuples are immutable
 ```
+错误的：
 ```python3
 No:  def foo(a, b=[]):
          ...
