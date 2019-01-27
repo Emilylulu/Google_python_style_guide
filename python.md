@@ -17,6 +17,8 @@
 2.10 [Lambda 函数](#210-Lambda 函数)<br>
 2.11 [条件表达式](#211-条件表达式)<br>
 2.12 [默认参数](#212-默认参数)<br>
+2.13 [属性](#213-属性)<br>
+2.17 [装饰器](#217-函数和方法装饰器)<br>
 3.16 [命名](#316-命名)<br>
 ## 1 背景
 python 是谷歌主要使用的动态语言。这篇指南主要讲述在python中应该做和不应该做的事项。
@@ -329,5 +331,60 @@ No:  def foo(a, b=time.time()):  # The time the module was loaded???
          ...
 No:  def foo(a, b=FLAGS.my_thing):  # sys.argv has not yet been parsed...
 ```
+### 2.13 属性
+可以使用属性来访问（``getter``）和更改数据（``setter``），这种方式可以替代轻量级的访问和更改数据方法。
+#### 2.13.1 定义
+当计算量不大时，可以将访问数据更改数据的方法，包装成标准的访问数据的方式。
+#### 2.13.2 优点 
+提升可读性，简单的数据访问将不必有访问，更改的方法。考虑一下使用python化的方法来维护类的接口。从效率上来说，当直接访问变量是可以的，允许属性过滤掉那些不必要的方法。这将允许以后添加访问方法而不需要更改接口。
+#### 2.13.3 缺点
+必须从python2中继承``object``。可能一些副作用会被隐藏，比如运算符超载。可能子类会变得混乱。
+#### 2.13.4 使用
+可以通过``@property``[装饰器](#217-函数和方法装饰器)来建属性。
+如果属性自身没有被覆盖，那可能会漏掉属性的继承。所以必须保证访问函数间接被调用，这样可以确保子类中被属性调用的函数被覆盖。
+```python3
+Yes: import math
+
+     class Square(object):
+         """A square with two properties: a writable area and a read-only perimeter. 可变面积，只读周长
+
+         To use:
+         >>> sq = Square(3)
+         >>> sq.area
+         9
+         >>> sq.perimeter
+         12
+         >>> sq.area = 16
+         >>> sq.side 边长
+         4
+         >>> sq.perimeter
+         16
+         """
+
+         def __init__(self, side):
+             self.side = side
+
+         @property
+         def area(self):
+             """Gets or sets the area of the square."""
+             return self._get_area()
+         # 参数可以分辨两个不同。 
+         @area.setter
+         def area(self, area):
+             return self._set_area(area)
+
+         def _get_area(self):
+             """Indirect accessor to calculate the 'area' property."""
+             return self.side ** 2
+
+         def _set_area(self, area):
+             """Indirect setter to set the 'area' property."""
+             self.side = math.sqrt(area)
+
+         @property
+         def perimeter(self):
+             return self.side * 4
+```
+### 2.17 函数和方法装饰器
 ### 3.16 命名
 #### 3.19.12 类型注解的导入
