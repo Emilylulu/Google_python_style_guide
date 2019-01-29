@@ -396,7 +396,39 @@ Yes: import math
 #### 2.14.4 使用
 使用``if foo:``，而不用``if foo != []``注意事项如下：
 1）不要用``==``或者``!=``去做比较，例如跟``None``作比较。请使用``is``或者``is not``。
-2）
-### 2.17 函数和方法装饰器
+2）注意``if x:``，如果你实际要做的是``if x is not None``。当要测试一个变量或者参数，这个变量或者参数初值是``None``，测试有没有被赋其他值。
+其他数值可能会被当做false。
+3）测试一个值是否等于``False``不要用``==``，要用``if not x:``。如果要区别``False``和``None``，``if not x and x is not None:``
+4) 对于字符串，列表，元组，空即为false。所以可以用``if seq:````if not seq:``来代替``if len(seq):````if not len(seq):``。
+5）对于整数类型，``None``就当做0来处理。可以把一个已知是整数类型的值和0作比较。
+```python3
+Yes: if not users:
+         print('no users')
+
+     if foo == 0:
+         self.handle_zero()
+
+     if i % 10 == 0:
+         self.handle_multiple_of_ten()
+
+     def f(x=None):
+         if x is None:
+             x = []
+```
+```python3
+No:  if len(users) == 0:
+         print('no users')
+
+     if foo is not None and not foo:
+         self.handle_zero()
+
+     if not i % 10:
+         self.handle_multiple_of_ten()
+
+     def f(x=None):
+         x = x or []
+```
+注意：``'0'``是字符类型，所以是
+### 2.17 函数和方法装饰器``True``。
 ### 3.16 命名
 #### 3.19.12 类型注解的导入
